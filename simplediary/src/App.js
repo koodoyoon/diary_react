@@ -82,9 +82,9 @@ const App = () => {
     dispatch({ type: "EDIT", targetId, newContent });
   }, []);
 
-  const memorizedDispatches = useMemo(()=>{
-    return {onCreate, onRemove, onEdit};
-  })
+  const memorizedDispatches = useMemo(() => {
+    return { onCreate, onRemove, onEdit };
+  });
 
   const getDiaryAnalysis = useMemo(() => {
     const goodCount = data.filter((it) => it.emotion >= 3).length;
