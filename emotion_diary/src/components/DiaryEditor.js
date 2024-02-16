@@ -1,21 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import {useContext, useEffect, useRef, useState} from "react";
-
+import { useContext, useEffect, useRef, useState } from "react";
+import { getStringDate } from "../util/date";
+import { emotionList } from "../util/emotion";
 import { DiaryDispatcherContext } from "./../App";
+
 import MyHeader from "./MyHeader";
 import MyButton from "./MyButton";
 import EmotionItem from "./EmotionItem";
 
-import {getStringDate} from "../util/date";
-import {emotionList} from "../util/emotion";
-
-const DiaryEditor = ({isEdit, originData}) => {
+const DiaryEditor = ({ isEdit, originData }) => {
   const contentRef = useRef();
   const [content, setContent] = useState("");
   const [emotion, setEmotion] = useState(3);
   const [date, setDate] = useState(getStringDate(new Date()));
 
-  const { onCreate, onEdit } = useContext(DiaryDispatcherContext);
+  const { onCreate, onEdit, onRemove } = useContext(DiaryDispatcherContext);
   const handleClickEmote = (emotion) => {
     setEmotion(emotion);
   };
@@ -28,31 +27,51 @@ const DiaryEditor = ({isEdit, originData}) => {
       return;
     }
 
-    if (window.confirm(isEdit ? "일기를 수정하시겠습니까?" : "새로운 일기를 작성하시겠습니까?")) {
+    if (
+      window.confirm(
+        isEdit ? "일기를 수정하시겠습니까?" : "새로운 일기를 작성하시겠습니까?"
+      )
+    ) {
       if (!isEdit) {
         onCreate(date, content, emotion);
       } else {
-        onEdit(originData.id, date, content, emotion)
+        onEdit(originData.id, date, content, emotion);
       }
     }
 
     navigate("/", { replace: true });
   };
 
-  useEffect(()=>{
+  const handleRemove = () => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      onRemove(originData.id);
+      navigate("/", { replace: true });
+    }
+  };
+
+  useEffect(() => {
     if (isEdit) {
-      setDate(getStringDate(new Date(parseInt(originData.date))))
+      setDate(getStringDate(new Date(parseInt(originData.date))));
       setEmotion(originData.emotion);
       setContent(originData.content);
     }
-  },[isEdit, originData])
+  }, [isEdit, originData]);
 
   return (
     <div className="DiaryEditor">
       <MyHeader
-        headText={isEdit ? "일기 수정하기" :"새 일기쓰기"}
+        headText={isEdit ? "일기 수정하기" : "새 일기쓰기"}
         leftChild={
           <MyButton text={"< 뒤로가기"} onClick={() => navigate(-1)} />
+        }
+        rightChild={
+          isEdit && (
+            <MyButton
+              text={"삭제하기"}
+              type={"negative"}
+              onClick={handleRemove}
+            />
+          )
         }
       />
       <div>
