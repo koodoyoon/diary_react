@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { getStringDate } from "../util/date";
 import { emotionList } from "../util/emotion";
-import { DiaryDispatcherContext } from "./../App";
+import { DiaryDispatchContext } from "./../App";
 
 import MyHeader from "./MyHeader";
 import MyButton from "./MyButton";
@@ -14,10 +14,10 @@ const DiaryEditor = ({ isEdit, originData }) => {
   const [emotion, setEmotion] = useState(3);
   const [date, setDate] = useState(getStringDate(new Date()));
 
-  const { onCreate, onEdit, onRemove } = useContext(DiaryDispatcherContext);
-  const handleClickEmote = (emotion) => {
+  const { onCreate, onEdit, onRemove } = useContext(DiaryDispatchContext);
+  const handleClickEmote = useCallback((emotion) => {
     setEmotion(emotion);
-  };
+  }, []);
 
   const navigate = useNavigate();
 
@@ -103,7 +103,7 @@ const DiaryEditor = ({ isEdit, originData }) => {
           <h4>오늘의 일기</h4>
           <div className="input_vox text_wrapper">
             <textarea
-              placeholder="오늘은 어땠나요"
+              placeholder="오늘은 어땠나요?"
               ref={contentRef}
               value={content}
               onChange={(e) => setContent(e.target.value)}

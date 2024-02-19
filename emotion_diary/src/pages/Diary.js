@@ -7,12 +7,17 @@ import { emotionList } from "../util/emotion";
 import MyHeader from "../components/MyHeader";
 import MyButton from "../components/MyButton";
 
-
 const Diary = () => {
   const { id } = useParams();
   const diaryList = useContext(DiaryStateContext);
   const [data, setData] = useState();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerHTML = `감정 일기장 - ${id}번 일기`;
+  }, []);
+
   useEffect(() => {
     if (diaryList.length >= 1) {
       const targetDiary = diaryList.find(

@@ -37,24 +37,23 @@ const reducer = (state, action) => {
 };
 
 export const DiaryStateContext = React.createContext();
-export const DiaryDispatcherContext = React.createContext();
+export const DiaryDispatchContext = React.createContext();
 
-function App() {
-  const [data, dispatch] = useReducer(reducer, []);
-
+const App = () => {
   useEffect(() => {
     const localData = localStorage.getItem("diary");
-    if (localData) {
+    if (localData.length > 2) {
       const diaryList = JSON.parse(localData).sort(
         (a, b) => parseInt(b.id) - parseInt(a.id)
       );
       dataId.current = parseInt(diaryList[0].id) + 1;
-
       dispatch({ type: "INIT", data: diaryList });
     }
   }, []);
 
-  const dataId = useRef(6);
+  const [data, dispatch] = useReducer(reducer, []);
+
+  const dataId = useRef(0);
 
   // CREATE
   const onCreate = (date, content, emotion) => {
@@ -90,7 +89,7 @@ function App() {
 
   return (
     <DiaryStateContext.Provider value={data}>
-      <DiaryDispatcherContext.Provider
+      <DiaryDispatchContext.Provider
         value={{
           onCreate,
           onRemove,
@@ -107,9 +106,9 @@ function App() {
             </Routes>
           </div>
         </BrowserRouter>
-      </DiaryDispatcherContext.Provider>
+      </DiaryDispatchContext.Provider>
     </DiaryStateContext.Provider>
   );
-}
+};
 
 export default App;
